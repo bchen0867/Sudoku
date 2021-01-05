@@ -2,12 +2,12 @@ from algorithms.solver import *
 from utilities import global_var
 import random
 from enum import Enum
+import time
 
 
 class Level(Enum):
     EASY = 1
     MEDIUM = 2
-    HARD = 3
 
 
 def fill_grid(grid, arr):
@@ -28,13 +28,15 @@ def fill_grid(grid, arr):
 
 
 def generate(diff_lel):
+    # record the start time
+    start = time.time()
+
     # change the amount of clues according to the difficulty level given
     if diff_lel == Level.EASY:
         clue_goal = random.randint(31, 33)
     elif diff_lel == Level.MEDIUM:
         clue_goal = random.randint(28, 30)
-    elif diff_lel == Level.HARD:
-        clue_goal = random.randint(25, 27)
+
     print("clue amount: ", clue_goal)
 
     # initiate a completed grid follows the sudoku rule
@@ -69,6 +71,8 @@ def generate(diff_lel):
             pos_list.append((row, col))
             clue_count += 1
 
+    run_time = time.time() - start
+    print("time took to run this generate fuc: %s" % run_time)
     print("This sudoku puzzle contains %s numbers as the starting clues." % clue_count)
     print(np.array(grid))
     return grid
@@ -77,4 +81,3 @@ def generate(diff_lel):
 if __name__ == '__main__':
     choose_level = Level.MEDIUM
     new_prob = generate(choose_level)
-    print(new_prob)
