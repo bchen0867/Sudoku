@@ -3,9 +3,8 @@
 import sys
 import pygame
 import time
-from solver import solve, is_valid
-from settings import Settings
-from SudokuGrid import SudokuGrid, SudokuCell, redraw_window
+from utilities.settings import Settings
+from SudokuGrid import SudokuGrid, redraw_window
 
 
 class SudokuGame:

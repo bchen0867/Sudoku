@@ -1,10 +1,10 @@
 """classes of Sudoku Grid"""
-from solver import get_ans
+from algorithms.solver import get_ans
 import pygame
 import time
 from datetime import timedelta
 from SudokuCell import SudokuCell
-from Button import Button
+from utilities.Button import Button
 import numpy as np
 
 
