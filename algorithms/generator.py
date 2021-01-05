@@ -1,9 +1,16 @@
 from algorithms.solver import *
 from utilities import global_var
 import random
+from enum import Enum
 
 
-def fill_grid(grid):
+class Level(Enum):
+    EASY = 1
+    MEDIUM = 2
+    HARD = 3
+
+
+def fill_grid(grid, arr):
     for i in range(81):
         row = i // 9
         col = i % 9
@@ -14,17 +21,26 @@ def fill_grid(grid):
                     grid[row][col] = value
                     if check_grid(grid):
                         return True
-                    elif fill_grid(grid):
+                    elif fill_grid(grid, arr):
                         return True
             break
     grid[row][col] = 0
 
 
-if __name__ == '__main__':
-    clue_goal = 29
-    arr = np.random.permutation(np.arange(1, 10))
+def generate(diff_lel):
+    # change the amount of clues according to the difficulty level given
+    if diff_lel == Level.EASY:
+        clue_goal = random.randint(31, 33)
+    elif diff_lel == Level.MEDIUM:
+        clue_goal = random.randint(28, 30)
+    elif diff_lel == Level.HARD:
+        clue_goal = random.randint(25, 27)
+    print("clue amount: ", clue_goal)
+
+    # initiate a completed grid follows the sudoku rule
     grid = np.zeros((9, 9), dtype=int)
-    fill_grid(grid)
+    arr = np.random.permutation(np.arange(1, 10))
+    fill_grid(grid, arr)
     print(np.array(grid))
 
     # Start Removing Numbers one by one
@@ -55,6 +71,10 @@ if __name__ == '__main__':
 
     print("This sudoku puzzle contains %s numbers as the starting clues." % clue_count)
     print(np.array(grid))
-    # global_var.ans_counter = 0
-    # print(get_ans(grid))
-    # print("number of ans: ", global_var.ans_counter)
+    return grid
+
+
+if __name__ == '__main__':
+    choose_level = Level.MEDIUM
+    new_prob = generate(choose_level)
+    print(new_prob)
