@@ -1,5 +1,6 @@
 """classes of Sudoku Grid"""
 from algorithms.solver import get_ans
+from algorithms.generator import generate, Level
 import pygame
 import time
 from datetime import timedelta
@@ -123,19 +124,20 @@ if __name__ == '__main__':
     win = pygame.display.set_mode(win_size)
     pygame.display.set_caption("Sudoku")
     pygame.font.init()
-    board = [
-        [0, 0, 4, 1, 0, 0, 0, 5, 0],
-        [0, 3, 2, 9, 0, 0, 4, 8, 1],
-        [1, 0, 0, 2, 8, 0, 0, 3, 9],
-        [0, 0, 9, 5, 3, 0, 1, 0, 0],
-        [0, 0, 0, 4, 0, 2, 0, 0, 0],
-        [7, 0, 5, 0, 9, 8, 0, 4, 0],
-        [0, 4, 0, 0, 0, 0, 0, 2, 0],
-        [5, 0, 0, 0, 0, 0, 3, 0, 0],
-        [0, 9, 0, 0, 0, 0, 5, 0, 0]
-    ]
-
-    board = SudokuGrid(board, 540, 540)
+    # prob = [
+    #     [0, 0, 4, 1, 0, 0, 0, 5, 0],
+    #     [0, 3, 2, 9, 0, 0, 4, 8, 1],
+    #     [1, 0, 0, 2, 8, 0, 0, 3, 9],
+    #     [0, 0, 9, 5, 3, 0, 1, 0, 0],
+    #     [0, 0, 0, 4, 0, 2, 0, 0, 0],
+    #     [7, 0, 5, 0, 9, 8, 0, 4, 0],
+    #     [0, 4, 0, 0, 0, 0, 0, 2, 0],
+    #     [5, 0, 0, 0, 0, 0, 3, 0, 0],
+    #     [0, 9, 0, 0, 0, 0, 5, 0, 0]
+    # ]
+    choose_level = Level.MEDIUM
+    prob = generate(choose_level)
+    board = SudokuGrid(prob, 540, 540)
     key = None
     run = True
     start = time.time()
