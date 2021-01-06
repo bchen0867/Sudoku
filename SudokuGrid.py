@@ -135,7 +135,7 @@ if __name__ == '__main__':
     #     [5, 0, 0, 0, 0, 0, 3, 0, 0],
     #     [0, 9, 0, 0, 0, 0, 5, 0, 0]
     # ]
-    choose_level = Level.MEDIUM
+    choose_level = Level.EASY
     prob = generate(choose_level)
     board = SudokuGrid(prob, 540, 540)
     key = None
