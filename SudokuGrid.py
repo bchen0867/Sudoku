@@ -110,9 +110,11 @@ def redraw_window(win, board, run_time, strikes, msg):
     win.blit(text, (10, 550))
     # Draw grid and board
     board.draw(win)
+    # TODO: add a button manager to draw all the buttons added
     # Draw buttons
     pencil_btn.draw(win)
     pen_btn.draw(win)
+    generate_btn.draw(win)
 
 
 def format_time(secs):
@@ -152,6 +154,9 @@ if __name__ == '__main__':
     pen_btn = Button(btn_color, win_size[0]-btn_width-10, btn_height*3, btn_width, btn_height, "Pen Mode")
     is_pen_mode = False
 
+    generate_btn = \
+        Button(btn_color, win_size[0] - btn_width - 10, btn_height * 5, btn_width, btn_height, "Generate New Problem")
+
     msg = "Press Enter key after your input to check if the value is correct. "
     while run:
         # record play time
@@ -165,11 +170,13 @@ if __name__ == '__main__':
             # mouse events
             pos = pygame.mouse.get_pos()
             if event.type == pygame.MOUSEBUTTONDOWN:
+                # click events on game board
                 clicked = board.click(pos)
                 if clicked:
                     board.select(clicked[0], clicked[1])
                     key = None
 
+                # click events for pen or pencil mode btn
                 if pencil_btn.is_hover(pos):
                     pencil_btn.clicked = True
                     pen_btn.clicked = False
@@ -179,6 +186,11 @@ if __name__ == '__main__':
                     pen_btn.clicked = True
                     is_pen_mode = True
 
+                # click events for generate btn
+                if generate_btn.is_hover(pos):
+                    print("generate btn is clicked")
+
+            # TODO: this event should be included in Button Class
             if event.type == pygame.MOUSEMOTION:
                 if pencil_btn.is_hover(pos):
                     pencil_btn.color = hover_color
@@ -189,6 +201,11 @@ if __name__ == '__main__':
                     pen_btn.color = hover_color
                 else:
                     pen_btn.color = btn_color
+
+                if generate_btn.is_hover(pos):
+                    generate_btn.color = hover_color
+                else:
+                    generate_btn.color = btn_color
 
             # keyboard events
             if event.type == pygame.KEYDOWN:

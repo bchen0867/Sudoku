@@ -2,6 +2,7 @@ import pygame
 
 
 class Button:
+    # TODO: add font parameter to the Button Class; improve Button Class with Rect Obj
     def __init__(self, color, x, y, width, height, text="", clicked=False):
 
         # (x, y) is the top left corner of the button
