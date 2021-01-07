@@ -17,7 +17,7 @@ class SudokuGame:
 
         self.screen = pygame.display.set_mode(
                 (self.settings.screen_width, self.settings.screen_height))
-        pygame.display.set_caption("Standard 9X9 Sudoku")
+        pygame.display.set_caption("Sudoku Game")
 
         # TODO: init sudoku grid
         self.sudoku_grid = SudokuGrid(self, problem, self.settings.screen_width, self.settings.screen_height)
