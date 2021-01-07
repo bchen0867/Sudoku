@@ -117,6 +117,14 @@ def redraw_window(win, board, run_time, strikes, msg):
     generate_btn.draw(win)
 
 
+def loading_screen(win):
+    win.fill((255, 255, 255))
+    fnt = pygame.font.SysFont("arial", 28)
+    msg_wait = "Please wait patiently for the new problem to be generated..."
+    text = fnt.render(msg_wait, True, (0, 0, 0))
+    win.blit(text, (10, 550))
+
+
 def format_time(secs):
     return str(timedelta(seconds=secs))
 
@@ -137,14 +145,17 @@ if __name__ == '__main__':
     #     [5, 0, 0, 0, 0, 0, 3, 0, 0],
     #     [0, 9, 0, 0, 0, 0, 5, 0, 0]
     # ]
-    choose_level = Level.EASY
-    prob = generate(choose_level)
+
+    # initialize the game
+    prob = generate(Level.EASY)
     board = SudokuGrid(prob, 540, 540)
     key = None
     run = True
     start = time.time()
     strikes = 0
+    msg = "Press Enter key after your input to check if the value is correct. "
 
+    # initialize the buttons
     btn_width = 125
     btn_height = 50
     btn_color = pygame.Color("#477EB8")
@@ -157,7 +168,7 @@ if __name__ == '__main__':
     generate_btn = \
         Button(btn_color, win_size[0] - btn_width - 10, btn_height * 5, btn_width, btn_height, "Generate New Problem")
 
-    msg = "Press Enter key after your input to check if the value is correct. "
+    is_loading = False
     while run:
         # record play time
         play_time = round(time.time() - start)
@@ -189,6 +200,16 @@ if __name__ == '__main__':
                 # click events for generate btn
                 if generate_btn.is_hover(pos):
                     print("generate btn is clicked")
+
+                    # TODO: print out message to let users wait for the new problem to be generated
+                    is_loading = True
+                    prob = generate(Level.EASY)
+                    board = SudokuGrid(prob, 540, 540)
+                    key = None
+                    run = True
+                    start = time.time()
+                    strikes = 0
+                    msg = "Press Enter key after your input to check if the value is correct. "
 
             # TODO: this event should be included in Button Class
             if event.type == pygame.MOUSEMOTION:
@@ -262,7 +283,13 @@ if __name__ == '__main__':
                         if strikes > 5:
                             msg = "You got it wrong for more than 5 times! Game over!"
 
-        redraw_window(win, board, play_time, strikes, msg)
+        while is_loading:
+            for i in range(5):
+                loading_screen(win)
+                pygame.display.flip()
+                time.sleep(1)
+            is_loading = False
 
+        redraw_window(win, board, play_time, strikes, msg)
         pygame.display.update()
 
