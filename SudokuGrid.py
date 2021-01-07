@@ -112,9 +112,7 @@ def redraw_window(win, board, run_time, strikes, msg):
     board.draw(win)
     # TODO: add a button manager to draw all the buttons added
     # Draw buttons
-    pencil_btn.draw(win)
-    pen_btn.draw(win)
-    generate_btn.draw(win)
+1
 
 
 def loading_screen(win):
@@ -168,6 +166,7 @@ if __name__ == '__main__':
     generate_btn = \
         Button(btn_color, win_size[0] - btn_width - 10, btn_height * 5, btn_width, btn_height, "Generate New Problem")
 
+    # initialize is_loading var
     is_loading = False
     while run:
         # record play time
