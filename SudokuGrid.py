@@ -112,7 +112,9 @@ def redraw_window(win, board, run_time, strikes, msg):
     board.draw(win)
     # TODO: add a button manager to draw all the buttons added
     # Draw buttons
-1
+    pencil_btn.draw(win)
+    pen_btn.draw(win)
+    generate_btn.draw(win)
 
 
 def loading_screen(win):
@@ -120,7 +122,7 @@ def loading_screen(win):
     fnt = pygame.font.SysFont("arial", 28)
     msg_wait = "Please wait patiently for the new problem to be generated..."
     text = fnt.render(msg_wait, True, (0, 0, 0))
-    win.blit(text, (10, 550))
+    win.blit(text, (20, 250))
 
 
 def format_time(secs):
@@ -159,12 +161,12 @@ if __name__ == '__main__':
     btn_color = pygame.Color("#477EB8")
     hover_color = pygame.Color("#B88147")
 
-    pencil_btn = Button(btn_color, win_size[0]-btn_width-10, btn_height, btn_width, btn_height, "Pencil Mode", True)
+    pencil_btn = Button(btn_color, win_size[0]-btn_width-10, btn_height, btn_width, btn_height, "Pencil Mode", clicked=True)
     pen_btn = Button(btn_color, win_size[0]-btn_width-10, btn_height*3, btn_width, btn_height, "Pen Mode")
     is_pen_mode = False
 
     generate_btn = \
-        Button(btn_color, win_size[0] - btn_width - 10, btn_height * 5, btn_width, btn_height, "Generate New Problem")
+        Button(btn_color, win_size[0] - btn_width - 10, btn_height * 8, btn_width, btn_height*1.5, "New Problem", fnt=pygame.font.SysFont("constantia", 18))
 
     # initialize is_loading var
     is_loading = False

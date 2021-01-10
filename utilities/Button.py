@@ -1,9 +1,11 @@
 import pygame
 
 
-class Button:
-    # TODO: add font parameter to the Button Class; improve Button Class with Rect Obj
-    def __init__(self, color, x, y, width, height, text="", clicked=False):
+class Button():
+    pygame.font.init()
+
+    # TODO: improve Button Class with Rect Obj
+    def __init__(self, color, x, y, width, height, text="", fnt=pygame.font.SysFont("constantia", 20), clicked=False):
 
         # (x, y) is the top left corner of the button
         self.x = x
@@ -11,6 +13,7 @@ class Button:
         self.width = width
         self.height = height
         self.text = text
+        self.font = fnt
         self.clicked = clicked
         self.color = color
 
@@ -31,8 +34,7 @@ class Button:
             pygame.draw.rect(win, outline_clr, (self.x, self.y, self.width, self.height), 0)
 
         if self.text != "":
-            font = pygame.font.SysFont("constantia", 20)
-            text = font.render(self.text, True, pygame.Color("#fcfcfc"))
+            text = self.font.render(self.text, True, pygame.Color("#fcfcfc"))
             text_rect = text.get_rect(center=(self.x+self.width/2, self.y+self.height/2))
             win.blit(text, text_rect)
 
