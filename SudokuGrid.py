@@ -6,6 +6,7 @@ import time
 from datetime import timedelta
 from SudokuCell import SudokuCell
 from utilities.Button import Button
+from utilities.colors import *
 import numpy as np
 
 
@@ -158,8 +159,8 @@ if __name__ == '__main__':
     # initialize the buttons
     btn_width = 125
     btn_height = 50
-    btn_color = pg.Color("#477EB8")
-    hover_color = pg.Color("#B88147")
+    btn_color = BLUE
+    hover_color = BROWN
 
     pencil_rect = win_size[0] - btn_width - 10, btn_height, btn_width, btn_height
     pencil_btn = Button(pencil_rect, btn_color, text="Pencil Mode", clicked=True)

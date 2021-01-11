@@ -1,4 +1,4 @@
-import pygame as pg
+from utilities.colors import *
 
 
 class Button:
@@ -10,7 +10,7 @@ class Button:
         self.font = fnt
         self.clicked = clicked
         self.color = color
-        self.hover_color = pg.Color("#B88147")
+        self.hover_color = BROWN
 
     @property
     def color(self):
@@ -24,12 +24,12 @@ class Button:
         pg.draw.rect(win, self.color, self.rect, 0)
 
         if self.clicked:
-            outline_clr = pg.Color("#BD6042")
-            pg.draw.rect(win, outline_clr, self.rect.inflate(-2, +4), 3)
-            pg.draw.rect(win, outline_clr, self.rect, 0)
+            clicked_color = ORANGE
+            pg.draw.rect(win, clicked_color, self.rect.inflate(-2, +4), 3)
+            pg.draw.rect(win, clicked_color, self.rect, 0)
 
         if self.text != "":
-            text = self.font.render(self.text, True, pg.Color("#FCFCFC"))
+            text = self.font.render(self.text, True, OFF_WHITE)
             text_rect = text.get_rect(center=self.rect.center)
             win.blit(text, text_rect)
 
@@ -40,9 +40,9 @@ class Button:
 
     def handle_hover(self, event):
         if event.type == pg.MOUSEMOTION and self.is_hover():
-            self.color = pg.Color("#B88147")
+            self.color = BROWN
         else:
-            self.color = pg.Color("#477EB8")
+            self.color = BLUE
 
 
 def update_screen():
@@ -61,8 +61,8 @@ if __name__ == '__main__':
     win.fill((255, 255, 255))
 
     run = True
-    btn_color = pg.Color("#477EB8")
-    hover_color = pg.Color("#B88147")
+    btn_color = BLUE
+    hover_color = BROWN
 
     pencil_rect = win_size[0]-btn_width-10, btn_height, btn_width, btn_height
     pencil_btn = Button(pencil_rect, btn_color, text="Pencil Mode", clicked=True)
