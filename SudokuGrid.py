@@ -160,18 +160,21 @@ if __name__ == '__main__':
     btn_width = 125
     btn_height = 50
     btn_color = BLUE
-    hover_color = BROWN
+
+    BUTTON_STYLE = {"hover_color": BROWN,
+                    "clicked_color": ORANGE,
+                    "font_color": OFF_WHITE}
 
     pencil_rect = win_size[0] - btn_width - 10, btn_height, btn_width, btn_height
-    pencil_btn = Button(pencil_rect, btn_color, text="Pencil Mode", clicked=True)
+    pencil_btn = Button(pencil_rect, btn_color, text="Pencil Mode", clicked=True, **BUTTON_STYLE)
 
     pen_rect = win_size[0] - btn_width - 10, btn_height * 3, btn_width, btn_height
-    pen_btn = Button(pen_rect, btn_color, text="Pen Mode")
+    pen_btn = Button(pen_rect, btn_color, text="Pen Mode", **BUTTON_STYLE)
 
     is_pen_mode = False
 
     generate_rect = win_size[0] - btn_width - 10, btn_height * 8, btn_width, btn_height*1.5
-    generate_btn = Button(generate_rect, btn_color, "New Problem", fnt=pg.font.SysFont("constantia", 18))
+    generate_btn = Button(generate_rect, btn_color, "New Problem", fnt=pg.font.SysFont("constantia", 18), **BUTTON_STYLE)
 
     # initialize is_loading var
     is_loading = False

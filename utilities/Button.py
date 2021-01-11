@@ -4,13 +4,14 @@ from utilities.colors import *
 class Button:
     pg.font.init()
 
-    def __init__(self, rect, color, text="", fnt=pg.font.SysFont("constantia", 20), clicked=False):
+    def __init__(self, rect, color, text="", fnt=pg.font.SysFont("constantia", 20), clicked=False, **kwargs):
         self.rect = pg.Rect(rect)
         self.text = text
         self.font = fnt
         self.clicked = clicked
-        self.color = color
-        self.hover_color = BROWN
+        self._color = color
+        self.btn_color = color
+        self.process_kwargs(kwargs)
 
     @property
     def color(self):
@@ -20,16 +21,26 @@ class Button:
     def color(self, new_color):
         self._color = new_color
 
+    def process_kwargs(self, kwargs):
+        """Various optional customization you can change by passing kwargs."""
+        settings = {"hover_color": None,
+                    "clicked_color": None,
+                    "font_color": None}
+        for kwarg in kwargs:
+            if kwarg in settings:
+                settings[kwarg] = kwargs[kwarg]
+            else:
+                raise AttributeError("Button has no keyword: {}".format(kwarg))
+        self.__dict__.update(settings)
+
     def draw(self, win):
-        pg.draw.rect(win, self.color, self.rect, 0)
+        pg.draw.rect(win, self.color, self.rect)
 
         if self.clicked:
-            clicked_color = ORANGE
-            pg.draw.rect(win, clicked_color, self.rect.inflate(-2, +4), 3)
-            pg.draw.rect(win, clicked_color, self.rect, 0)
+            pg.draw.rect(win, self.clicked_color, self.rect.inflate(2, 4))
 
         if self.text != "":
-            text = self.font.render(self.text, True, OFF_WHITE)
+            text = self.font.render(self.text, True, self.font_color)
             text_rect = text.get_rect(center=self.rect.center)
             win.blit(text, text_rect)
 
@@ -40,9 +51,9 @@ class Button:
 
     def handle_hover(self, event):
         if event.type == pg.MOUSEMOTION and self.is_hover():
-            self.color = BROWN
+            self.color = self.hover_color
         else:
-            self.color = BLUE
+            self.color = self.btn_color
 
 
 def update_screen():
@@ -62,13 +73,15 @@ if __name__ == '__main__':
 
     run = True
     btn_color = BLUE
-    hover_color = BROWN
+    BUTTON_STYLE = {"hover_color": BROWN,
+                    "clicked_color": ORANGE,
+                    "font_color": OFF_WHITE}
 
-    pencil_rect = win_size[0]-btn_width-10, btn_height, btn_width, btn_height
-    pencil_btn = Button(pencil_rect, btn_color, text="Pencil Mode", clicked=True)
+    pencil_rect = win_size[0] - btn_width - 10, btn_height, btn_width, btn_height
+    pencil_btn = Button(pencil_rect, btn_color, text="Pencil Mode", clicked=True, **BUTTON_STYLE)
 
-    pen_rect = win_size[0]-btn_width-10, btn_height*3, btn_width, btn_height
-    pen_btn = Button(pen_rect, btn_color, text="Pen Mode")
+    pen_rect = win_size[0] - btn_width - 10, btn_height * 3, btn_width, btn_height
+    pen_btn = Button(pen_rect, btn_color, text="Pen Mode", **BUTTON_STYLE)
 
     while run:
         update_screen()
@@ -90,4 +103,3 @@ if __name__ == '__main__':
 
             pencil_btn.handle_hover(event)
             pen_btn.handle_hover(event)
-
