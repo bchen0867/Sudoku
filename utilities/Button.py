@@ -10,6 +10,7 @@ class Button:
         self.font = fnt
         self.clicked = clicked
         self.color = color
+        self.hover_color = pg.Color("#B88147")
 
     @property
     def color(self):
@@ -36,6 +37,12 @@ class Button:
         if self.rect.collidepoint(pg.mouse.get_pos()):
             return True
         return False
+
+    def handle_hover(self, event):
+        if event.type == pg.MOUSEMOTION and self.is_hover():
+            self.color = pg.Color("#B88147")
+        else:
+            self.color = pg.Color("#477EB8")
 
 
 def update_screen():
@@ -81,13 +88,6 @@ if __name__ == '__main__':
                     pencil_btn.clicked = False
                     pen_btn.clicked = True
 
-            if event.type == pg.MOUSEMOTION:
-                if pencil_btn.is_hover():
-                    pencil_btn.color = hover_color
-                else:
-                    pencil_btn.color = btn_color
+            pencil_btn.handle_hover(event)
+            pen_btn.handle_hover(event)
 
-                if pen_btn.is_hover():
-                    pen_btn.color = hover_color
-                else:
-                    pen_btn.color = btn_color

@@ -216,22 +216,9 @@ if __name__ == '__main__':
                     strikes = 0
                     msg = "Press Enter key after your input to check if the value is correct. "
 
-            # TODO: this event should be included in Button Class
-            if event.type == pg.MOUSEMOTION:
-                if pencil_btn.is_hover():
-                    pencil_btn.color = hover_color
-                else:
-                    pencil_btn.color = btn_color
-
-                if pen_btn.is_hover():
-                    pen_btn.color = hover_color
-                else:
-                    pen_btn.color = btn_color
-
-                if generate_btn.is_hover():
-                    generate_btn.color = hover_color
-                else:
-                    generate_btn.color = btn_color
+            pencil_btn.handle_hover(event)
+            pen_btn.handle_hover(event)
+            generate_btn.handle_hover(event)
 
             # keyboard events
             if event.type == pg.KEYDOWN:
