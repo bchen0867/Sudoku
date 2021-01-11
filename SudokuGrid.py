@@ -1,7 +1,7 @@
 """classes of Sudoku Grid"""
 from algorithms.solver import get_ans
 from algorithms.generator import generate, Level
-import pygame
+import pygame as pg
 import time
 from datetime import timedelta
 from SudokuCell import SudokuCell
@@ -49,8 +49,8 @@ class SudokuGrid:
                 thick = 4
             else:
                 thick = 1
-            pygame.draw.line(win, (0, 0, 0), (0, i * gap), (self.width + thick/2, i * gap), thick)
-            pygame.draw.line(win, (0, 0, 0), (i * gap, 0), (i * gap, self.height + thick/2), thick)
+            pg.draw.line(win, (0, 0, 0), (0, i * gap), (self.width + thick/2, i * gap), thick)
+            pg.draw.line(win, (0, 0, 0), (i * gap, 0), (i * gap, self.height + thick/2), thick)
 
         # Draw cells
         for i in range(self.rows):
@@ -98,14 +98,14 @@ class SudokuGrid:
 def redraw_window(win, board, run_time, strikes, msg):
     win.fill((255, 255, 255))
     # Draw time
-    fnt = pygame.font.SysFont("comicsansms", 40)
+    fnt = pg.font.SysFont("comicsansms", 40)
     text = fnt.render("Time: " + format_time(run_time), True, (0, 0, 0))
     win.blit(text, (280, 600))
     # Draw Strikes
     text = fnt.render("X " * strikes, True, (255, 0, 0))
     win.blit(text, (20, 600))
     # Print message on the ui
-    fnt = pygame.font.SysFont("arial", 28)
+    fnt = pg.font.SysFont("arial", 28)
     text = fnt.render(msg, True, (0, 0, 0))
     win.blit(text, (10, 550))
     # Draw grid and board
@@ -119,7 +119,7 @@ def redraw_window(win, board, run_time, strikes, msg):
 
 def loading_screen(win):
     win.fill((255, 255, 255))
-    fnt = pygame.font.SysFont("arial", 28)
+    fnt = pg.font.SysFont("arial", 28)
     msg_wait = "Please wait patiently for the new problem to be generated..."
     text = fnt.render(msg_wait, True, (0, 0, 0))
     win.blit(text, (20, 250))
@@ -131,9 +131,9 @@ def format_time(secs):
 
 if __name__ == '__main__':
     win_size = (700, 700)
-    win = pygame.display.set_mode(win_size)
-    pygame.display.set_caption("Sudoku")
-    pygame.font.init()
+    win = pg.display.set_mode(win_size)
+    pg.display.set_caption("Sudoku")
+    pg.font.init()
     # prob = [
     #     [0, 0, 4, 1, 0, 0, 0, 5, 0],
     #     [0, 3, 2, 9, 0, 0, 4, 8, 1],
@@ -158,15 +158,19 @@ if __name__ == '__main__':
     # initialize the buttons
     btn_width = 125
     btn_height = 50
-    btn_color = pygame.Color("#477EB8")
-    hover_color = pygame.Color("#B88147")
+    btn_color = pg.Color("#477EB8")
+    hover_color = pg.Color("#B88147")
 
-    pencil_btn = Button(btn_color, win_size[0]-btn_width-10, btn_height, btn_width, btn_height, "Pencil Mode", clicked=True)
-    pen_btn = Button(btn_color, win_size[0]-btn_width-10, btn_height*3, btn_width, btn_height, "Pen Mode")
+    pencil_rect = win_size[0] - btn_width - 10, btn_height, btn_width, btn_height
+    pencil_btn = Button(pencil_rect, btn_color, text="Pencil Mode", clicked=True)
+
+    pen_rect = win_size[0] - btn_width - 10, btn_height * 3, btn_width, btn_height
+    pen_btn = Button(pen_rect, btn_color, text="Pen Mode")
+
     is_pen_mode = False
 
-    generate_btn = \
-        Button(btn_color, win_size[0] - btn_width - 10, btn_height * 8, btn_width, btn_height*1.5, "New Problem", fnt=pygame.font.SysFont("constantia", 18))
+    generate_rect = win_size[0] - btn_width - 10, btn_height * 8, btn_width, btn_height*1.5
+    generate_btn = Button(generate_rect, btn_color, "New Problem", fnt=pg.font.SysFont("constantia", 18))
 
     # initialize is_loading var
     is_loading = False
@@ -175,13 +179,13 @@ if __name__ == '__main__':
         play_time = round(time.time() - start)
 
         # check events
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
                 run = False
 
             # mouse events
-            pos = pygame.mouse.get_pos()
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            pos = pg.mouse.get_pos()
+            if event.type == pg.MOUSEBUTTONDOWN:
                 # click events on game board
                 clicked = board.click(pos)
                 if clicked:
@@ -189,17 +193,17 @@ if __name__ == '__main__':
                     key = None
 
                 # click events for pen or pencil mode btn
-                if pencil_btn.is_hover(pos):
+                if pencil_btn.is_hover():
                     pencil_btn.clicked = True
                     pen_btn.clicked = False
                     is_pen_mode = False
-                elif pen_btn.is_hover(pos):
+                elif pen_btn.is_hover():
                     pencil_btn.clicked = False
                     pen_btn.clicked = True
                     is_pen_mode = True
 
                 # click events for generate btn
-                if generate_btn.is_hover(pos):
+                if generate_btn.is_hover():
                     print("generate btn is clicked")
 
                     # TODO: print out message to let users wait for the new problem to be generated
@@ -213,57 +217,57 @@ if __name__ == '__main__':
                     msg = "Press Enter key after your input to check if the value is correct. "
 
             # TODO: this event should be included in Button Class
-            if event.type == pygame.MOUSEMOTION:
-                if pencil_btn.is_hover(pos):
+            if event.type == pg.MOUSEMOTION:
+                if pencil_btn.is_hover():
                     pencil_btn.color = hover_color
                 else:
                     pencil_btn.color = btn_color
 
-                if pen_btn.is_hover(pos):
+                if pen_btn.is_hover():
                     pen_btn.color = hover_color
                 else:
                     pen_btn.color = btn_color
 
-                if generate_btn.is_hover(pos):
+                if generate_btn.is_hover():
                     generate_btn.color = hover_color
                 else:
                     generate_btn.color = btn_color
 
             # keyboard events
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_q:
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_q:
                     run = False
 
-                if pygame.K_1 <= event.key <= pygame.K_9:
-                    key = int(pygame.key.name(event.key))
+                if pg.K_1 <= event.key <= pg.K_9:
+                    key = int(pg.key.name(event.key))
                     # update temp info only after event
                     if board.selected and key is not None:
                         board.update_selected_cell(key)
 
-                if pygame.K_KP1 <= event.key <= pygame.K_KP9:
-                    key = int(pygame.key.name(event.key)[1])
+                if pg.K_KP1 <= event.key <= pg.K_KP9:
+                    key = int(pg.key.name(event.key)[1])
                     # update temp info only after event
                     if board.selected and key is not None:
                         board.update_selected_cell(key)
 
                 if board.selected:
                     i, j = board.selected
-                    if event.key == pygame.K_LEFT and j > 0:
+                    if event.key == pg.K_LEFT and j > 0:
                         j -= 1
-                    elif event.key == pygame.K_RIGHT and j < 8:
+                    elif event.key == pg.K_RIGHT and j < 8:
                         j += 1
-                    elif event.key == pygame.K_UP and i > 0:
+                    elif event.key == pg.K_UP and i > 0:
                         i -= 1
-                    elif event.key == pygame.K_DOWN and i < 8:
+                    elif event.key == pg.K_DOWN and i < 8:
                         i += 1
                     board.select(i, j)
 
-                if event.key == pygame.K_DELETE:
+                if event.key == pg.K_DELETE:
                     board.clear_selected()
                     key = None
 
                 # press return key to compare to the answer
-                if event.key == pygame.K_RETURN:
+                if event.key == pg.K_RETURN:
                     i, j = board.selected
                     if board.cells[i][j].value == 0:
                         msg = "There is no value inside this cell to compare!"
@@ -287,10 +291,10 @@ if __name__ == '__main__':
         while is_loading:
             for i in range(5):
                 loading_screen(win)
-                pygame.display.flip()
+                pg.display.flip()
                 time.sleep(1)
             is_loading = False
 
         redraw_window(win, board, play_time, strikes, msg)
-        pygame.display.update()
+        pg.display.update()
 

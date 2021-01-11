@@ -1,13 +1,12 @@
-"""Sudoku Game GUI made with Pygame"""
+"""Sudoku Game GUI made with pg"""
 
 import sys
-import pygame
 import time
 from utilities.Settings import Settings
 from SudokuGrid import SudokuGrid, redraw_window
 from algorithms.solver import get_ans
 from algorithms.generator import generate, Level
-import pygame
+import pygame as pg
 import time
 from datetime import timedelta
 from SudokuCell import SudokuCell
@@ -20,11 +19,11 @@ class SudokuGame:
 
     def __init__(self, prob):
         """Initialize the game, and create resources."""
-        pygame.init()
+        pg.init()
         self.settings = Settings()
-        self.screen = pygame.display.set_mode(
+        self.screen = pg.display.set_mode(
                 (self.settings.screen_width, self.settings.screen_height))
-        pygame.display.set_caption("Sudoku Game")
+        pg.display.set_caption("Sudoku Game")
 
         # TODO: init sudoku grid
         # self.level = Level.EASY
@@ -47,13 +46,13 @@ class SudokuGame:
             self._update_screen()
 
     def _check_events(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
                 self.run = False
 
             # mouse events
-            pos = pygame.mouse.get_pos()
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            pos = pg.mouse.get_pos()
+            if event.type == pg.MOUSEBUTTONDOWN:
                 # click events on game board
                 clicked = self.board.click(pos)
                 if clicked:
@@ -83,7 +82,7 @@ class SudokuGame:
                 #     msg = "Press Enter key after your input to check if the value is correct. "
 
             # # TODO: this event should be included in Button Class
-            # if event.type == pygame.MOUSEMOTION:
+            # if event.type == pg.MOUSEMOTION:
             #     if pencil_btn.is_hover(pos):
             #         pencil_btn.color = hover_color
             #     else:
@@ -100,40 +99,40 @@ class SudokuGame:
             #         generate_btn.color = btn_color
 
             # keyboard events
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_q:
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_q:
                     self.run = False
 
-                if pygame.K_1 <= event.key <= pygame.K_9:
-                    key = int(pygame.key.name(event.key))
+                if pg.K_1 <= event.key <= pg.K_9:
+                    key = int(pg.key.name(event.key))
                     # update temp info only after event
                     if self.board.selected and key is not None:
                         self.board.update_selected_cell(key)
 
-                if pygame.K_KP1 <= event.key <= pygame.K_KP9:
-                    key = int(pygame.key.name(event.key)[1])
+                if pg.K_KP1 <= event.key <= pg.K_KP9:
+                    key = int(pg.key.name(event.key)[1])
                     # update temp info only after event
                     if self.board.selected and key is not None:
                         self.board.update_selected_cell(key)
 
                 if self.board.selected:
                     i, j = self.board.selected
-                    if event.key == pygame.K_LEFT and j > 0:
+                    if event.key == pg.K_LEFT and j > 0:
                         j -= 1
-                    elif event.key == pygame.K_RIGHT and j < 8:
+                    elif event.key == pg.K_RIGHT and j < 8:
                         j += 1
-                    elif event.key == pygame.K_UP and i > 0:
+                    elif event.key == pg.K_UP and i > 0:
                         i -= 1
-                    elif event.key == pygame.K_DOWN and i < 8:
+                    elif event.key == pg.K_DOWN and i < 8:
                         i += 1
                     self.board.select(i, j)
 
-                if event.key == pygame.K_DELETE:
+                if event.key == pg.K_DELETE:
                     self.board.clear_selected()
                     self.key = None
 
                 # press return key to compare to the answer
-                if event.key == pygame.K_RETURN:
+                if event.key == pg.K_RETURN:
                     i, j = self.board.selected
                     if self.board.cells[i][j].value == 0:
                         self.msg = "There is no value inside this cell to compare!"
@@ -157,7 +156,7 @@ class SudokuGame:
     def _update_screen(self):
         # self.screen.fill(self.settings.bg_color)
         redraw_window(self.screen, self.board, self.play_time, self.strikes, self.msg)
-        pygame.display.update()
+        pg.display.update()
 
 
 if __name__ == '__main__':
