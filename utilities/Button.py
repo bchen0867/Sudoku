@@ -4,34 +4,40 @@ from utilities.colors import *
 class Button:
     pg.font.init()
 
-    def __init__(self, rect, color, text="", fnt=pg.font.SysFont("constantia", 20), clicked=False, **kwargs):
+    def __init__(self, rect, color, caption="", **kwargs):
         self.rect = pg.Rect(rect)
-        self.text = text
-        self.font = fnt
-        self.clicked = clicked
-        self._color = color
+        self.caption = caption
+        self.clicked = False
+        self.color = color
         self.btn_color = color
-        self.process_kwargs(kwargs)
+        self.kwargs = kwargs
+        self.process_kwargs()
 
-    @property
-    def color(self):
-        return self._color
-
-    @color.setter
-    def color(self, new_color):
-        self._color = new_color
-
-    def process_kwargs(self, kwargs):
-        """Various optional customization you can change by passing kwargs."""
-        settings = {"hover_color": None,
+    def process_kwargs(self):
+        settings = {"font": pg.font.SysFont("constantia", 16),
+                    "hover_color": None,
                     "clicked_color": None,
                     "font_color": None}
-        for kwarg in kwargs:
+        for kwarg in self.kwargs:
             if kwarg in settings:
-                settings[kwarg] = kwargs[kwarg]
+                settings[kwarg] = self.kwargs[kwarg]
             else:
                 raise AttributeError("Button has no keyword: {}".format(kwarg))
         self.__dict__.update(settings)
+
+    def duplicate(self, x, y, new_caption="", new_color=None):
+        """Returns a new button having the same parameters
+        and is moved by the given offset."""
+        rect = self.rect.copy().move(x, y)
+        caption = self.caption
+        color = self.color
+
+        if new_caption:
+            caption = new_caption
+        if new_color:
+            color = new_color
+
+        return Button(rect, color, caption, **self.kwargs)
 
     def draw(self, win):
         pg.draw.rect(win, self.color, self.rect)
@@ -39,8 +45,8 @@ class Button:
         if self.clicked:
             pg.draw.rect(win, self.clicked_color, self.rect.inflate(2, 4))
 
-        if self.text != "":
-            text = self.font.render(self.text, True, self.font_color)
+        if self.caption:
+            text = self.font.render(self.caption, True, self.font_color)
             text_rect = text.get_rect(center=self.rect.center)
             win.blit(text, text_rect)
 
@@ -72,24 +78,22 @@ if __name__ == '__main__':
     win.fill((255, 255, 255))
 
     run = True
-    btn_color = BLUE
-    BUTTON_STYLE = {"hover_color": BROWN,
+
+    BUTTON_STYLE = {"font": pg.font.SysFont("constantia", 20),
+                    "hover_color": BROWN,
                     "clicked_color": ORANGE,
                     "font_color": OFF_WHITE}
 
-    pencil_rect = win_size[0] - btn_width - 10, btn_height, btn_width, btn_height
-    pencil_btn = Button(pencil_rect, btn_color, text="Pencil Mode", clicked=True, **BUTTON_STYLE)
-
-    pen_rect = win_size[0] - btn_width - 10, btn_height * 3, btn_width, btn_height
-    pen_btn = Button(pen_rect, btn_color, text="Pen Mode", **BUTTON_STYLE)
+    btn_rect = pg.Rect(win_size[0] - btn_width - 10, btn_height, btn_width, btn_height)
+    pencil_btn = Button(btn_rect, BLUE, "Pencil Mode", **BUTTON_STYLE)
+    pencil_btn.clicked = True
+    pen_btn = pencil_btn.duplicate(0, 150, "Pen Mode")
 
     while run:
         update_screen()
         pg.display.update()
 
         for event in pg.event.get():
-            pos = pg.mouse.get_pos()
-
             if event.type == pg.QUIT:
                 run = False
 
@@ -103,3 +107,4 @@ if __name__ == '__main__':
 
             pencil_btn.handle_hover(event)
             pen_btn.handle_hover(event)
+
