@@ -5,7 +5,7 @@ import pygame as pg
 import time
 from datetime import timedelta
 from SudokuCell import SudokuCell
-from utilities.Button import Button
+from utilities.Button import Button, ButtonManager
 from utilities.colors import *
 import numpy as np
 
@@ -113,9 +113,7 @@ def redraw_window(win, board, run_time, strikes, msg):
     board.draw(win)
     # TODO: add a button manager to draw all the buttons added
     # Draw buttons
-    pencil_btn.draw(win)
-    pen_btn.draw(win)
-    generate_btn.draw(win)
+    button_manager.draw_buttons(win)
 
 
 def loading_screen(win):
@@ -173,6 +171,7 @@ if __name__ == '__main__':
     pencil_btn.clicked = True
     pen_btn = pencil_btn.duplicate(0, 150, "Pen Mode")
     generate_btn = Button(btn_rect.inflate(10, 0).move(0, 450), GREEN, "New Problem", **BUTTON_STYLE)
+    button_manager = ButtonManager((pencil_btn, pen_btn, generate_btn))
 
     # initialize is_loading var
     is_loading = False
@@ -218,9 +217,7 @@ if __name__ == '__main__':
                     strikes = 0
                     msg = "Press Enter key after your input to check if the value is correct. "
 
-            pencil_btn.handle_hover(event)
-            pen_btn.handle_hover(event)
-            generate_btn.handle_hover(event)
+            button_manager.handle_hover_for_all(event)
 
             # keyboard events
             if event.type == pg.KEYDOWN:

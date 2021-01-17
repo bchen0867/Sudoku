@@ -62,10 +62,36 @@ class Button:
             self.color = self.btn_color
 
 
+class ButtonManager:
+    def __init__(self, button_list):
+        self.size = len(button_list)
+        # self.buttons = [Button(button_list[i]) for i in range(self.size)]
+        self.buttons = button_list
+
+    def add_button(self, button):
+        """ Sets the button to manage """
+        self.buttons.append(button)
+
+    def remove_button(self, button):
+        """ Remove a button from the managed buttons """
+        self.buttons.remove(button)
+
+    def clear_buttons(self):
+        """ Removes all buttons """
+        self.buttons.clear()
+
+    def handle_hover_for_all(self, event):
+        for btn in self.buttons:
+            btn.handle_hover(event)
+
+    def draw_buttons(self, win):
+        for btn in self.buttons:
+            btn.draw(win)
+
+
 def update_screen():
     win.fill((255, 255, 255))
-    pencil_btn.draw(win)
-    pen_btn.draw(win)
+    button_manager.draw_buttons(win)
 
 
 if __name__ == '__main__':
@@ -89,6 +115,8 @@ if __name__ == '__main__':
     pencil_btn.clicked = True
     pen_btn = pencil_btn.duplicate(0, 150, "Pen Mode")
 
+    button_manager = ButtonManager((pencil_btn, pen_btn))
+
     while run:
         update_screen()
         pg.display.update()
@@ -105,6 +133,4 @@ if __name__ == '__main__':
                     pencil_btn.clicked = False
                     pen_btn.clicked = True
 
-            pencil_btn.handle_hover(event)
-            pen_btn.handle_hover(event)
-
+            button_manager.handle_hover_for_all(event)
