@@ -5,7 +5,7 @@ import pygame as pg
 import time
 from datetime import timedelta
 from SudokuCell import SudokuCell
-from utilities.Button import Button, ButtonManager
+from utilities.Button import *
 from utilities.colors import *
 import numpy as np
 
@@ -172,6 +172,7 @@ if __name__ == '__main__':
     pen_btn = pencil_btn.duplicate(0, 150, "Pen Mode")
     generate_btn = Button(btn_rect.inflate(10, 0).move(0, 450), GREEN, "New Problem", **BUTTON_STYLE)
     button_manager = ButtonManager((pencil_btn, pen_btn, generate_btn))
+    mode_buttons = [pencil_btn, pen_btn]
 
     # initialize is_loading var
     is_loading = False
@@ -194,14 +195,11 @@ if __name__ == '__main__':
                     key = None
 
                 # click events for pen or pencil mode btn
-                if pencil_btn.is_hover():
-                    pencil_btn.clicked = True
-                    pen_btn.clicked = False
-                    is_pen_mode = False
-                elif pen_btn.is_hover():
-                    pencil_btn.clicked = False
-                    pen_btn.clicked = True
-                    is_pen_mode = True
+                for btn in mode_buttons:
+                    if btn.is_hover():
+                        remove_click_for_buttons(mode_buttons)
+                        btn.clicked = True
+                        break
 
                 # click events for generate btn
                 if generate_btn.is_hover():

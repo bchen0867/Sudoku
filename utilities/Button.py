@@ -65,7 +65,6 @@ class Button:
 class ButtonManager:
     def __init__(self, button_list):
         self.size = len(button_list)
-        # self.buttons = [Button(button_list[i]) for i in range(self.size)]
         self.buttons = button_list
 
     def add_button(self, button):
@@ -87,6 +86,11 @@ class ButtonManager:
     def draw_buttons(self, win):
         for btn in self.buttons:
             btn.draw(win)
+
+
+def remove_click_for_buttons(list):
+    for btn in list:
+        btn.clicked = False
 
 
 def update_screen():
@@ -115,8 +119,8 @@ if __name__ == '__main__':
     pencil_btn.clicked = True
     pen_btn = pencil_btn.duplicate(0, 150, "Pen Mode")
 
-    button_manager = ButtonManager((pencil_btn, pen_btn))
-
+    button_manager = ButtonManager([pencil_btn, pen_btn])
+    mode_buttons = [pencil_btn, pen_btn]
     while run:
         update_screen()
         pg.display.update()
@@ -126,11 +130,10 @@ if __name__ == '__main__':
                 run = False
 
             if event.type == pg.MOUSEBUTTONDOWN:
-                if pencil_btn.is_hover():
-                    pencil_btn.clicked = True
-                    pen_btn.clicked = False
-                elif pen_btn.is_hover():
-                    pencil_btn.clicked = False
-                    pen_btn.clicked = True
+                for btn in mode_buttons:
+                    if btn.is_hover():
+                        remove_click_for_buttons(mode_buttons)
+                        btn.clicked = True
+                        break
 
             button_manager.handle_hover_for_all(event)
