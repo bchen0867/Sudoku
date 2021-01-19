@@ -3,11 +3,13 @@ from utilities import global_var
 import random
 from enum import Enum
 import time
+import functools
 
 
 class Level(Enum):
     EASY = 1
     MEDIUM = 2
+    HARD = 3
 
 
 def fill_grid(grid, arr):
@@ -27,6 +29,7 @@ def fill_grid(grid, arr):
     grid[row][col] = 0
 
 
+@functools.lru_cache(10)
 def generate(diff_lel):
     # record the start time
     start = time.time()
@@ -36,6 +39,8 @@ def generate(diff_lel):
         clue_goal = random.randint(31, 33)
     elif diff_lel == Level.MEDIUM:
         clue_goal = random.randint(28, 30)
+    elif diff_lel == Level.HARD:
+        clue_goal = random.randint(25, 27)
 
     print("clue amount: ", clue_goal)
 
@@ -79,5 +84,5 @@ def generate(diff_lel):
 
 
 if __name__ == '__main__':
-    choose_level = Level.MEDIUM
+    choose_level = Level.EASY
     new_prob = generate(choose_level)

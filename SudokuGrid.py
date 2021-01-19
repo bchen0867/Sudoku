@@ -148,7 +148,7 @@ if __name__ == '__main__':
     ]
 
     # initialize the game
-    # prob = generate(Level.EASY)
+    prob = generate(Level.EASY)
     board = SudokuGrid(prob, 540, 540)
     key = None
     run = True
@@ -273,6 +273,7 @@ if __name__ == '__main__':
                             msg = "You got it wrong for more than 5 times! Game over!"
 
         while is_loading:
+            # TODO: make loading time dynamic
             for i in range(5):
                 loading_screen(win)
                 pg.display.flip()

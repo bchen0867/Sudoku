@@ -33,7 +33,6 @@ def is_valid(grid, x, y, num):
 
 
 def solve(grid):
-
     for i in range(9):
         for j in range(9):
             if grid[i][j] == 0:
@@ -51,34 +50,22 @@ def solve(grid):
 def get_ans(grid):
     global_var.ans_counter = 0
     solve(grid)
+    # print("end of get_ans func, the ans is: \n", global_var.ans_grid)
     return global_var.ans_grid
 
 
 if __name__ == '__main__':
-
     grid = [
-        [0, 0, 4, 1, 0, 0, 0, 5, 0],
-        [0, 3, 2, 9, 0, 0, 4, 8, 1],
-        [1, 0, 0, 2, 8, 0, 0, 3, 9],
-        [0, 0, 9, 5, 3, 0, 1, 0, 0],
-        [0, 0, 0, 4, 0, 2, 0, 0, 0],
-        [7, 0, 5, 0, 9, 8, 0, 4, 0],
-        [0, 4, 0, 0, 0, 0, 0, 2, 0],
-        [5, 0, 0, 0, 0, 0, 3, 0, 0],
-        [0, 9, 0, 0, 0, 0, 5, 0, 0]
+        [0, 0, 0, 0, 7, 0, 5, 0, 0],
+        [0, 0, 4, 0, 9, 0, 1, 0, 0],
+        [6, 5, 0, 0, 0, 0, 9, 0, 0],
+        [0, 4, 0, 0, 0, 3, 0, 0, 8],
+        [0, 1, 0, 7, 2, 9, 0, 4, 0],
+        [3, 0, 0, 6, 0, 0, 0, 9, 0],
+        [0, 0, 7, 0, 0, 0, 0, 3, 2],
+        [0, 0, 3, 0, 8, 0, 4, 0, 0],
+        [0, 0, 2, 0, 5, 0, 0, 0, 0]
     ]
 
     global_var.ans_counter = 0
-    print(get_ans(grid))
-    # print(np.array(grid))
-    print("number of ans: ", global_var.ans_counter)
-
-# [[9 8 4 1 6 3 7 5 2]
-#  [6 3 2 9 7 5 4 8 1]
-#  [1 5 7 2 8 4 6 3 9]
-#  [4 2 9 5 3 7 1 6 8]
-#  [8 6 3 4 1 2 9 7 5]
-#  [7 1 5 6 9 8 2 4 3]
-#  [3 4 1 7 5 9 8 2 6]
-#  [5 7 6 8 2 1 3 9 4]
-#  [2 9 8 3 4 6 5 1 7]]
+    get_ans(grid)
