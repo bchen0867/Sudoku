@@ -64,7 +64,7 @@ class SudokuCell:
 
     def draw(self, win):
         fnt = pygame.font.SysFont("comicsansms", 40)
-        sml_fnt = pygame.font.SysFont("comicsansms", 30)
+        sml_fnt = pygame.font.SysFont("comicsansms", 23)
         # change the margin value if needed in the future
         left_margin = 0
         gap = self.width / 9
@@ -77,7 +77,7 @@ class SudokuCell:
             else:
                 draw_num(win, fnt, self.value, (0, 0, 0), (x + gap / 2, y + gap / 2))
         elif self.temp:
-            # display temp values using gray font
+            # display temp values using gray and small font
             for num in self.temp:
                 draw_num(win, sml_fnt, num, (128, 128, 128), cell_center(x, y, num, gap))
 
