@@ -1,15 +1,12 @@
 """Sudoku Game GUI made with pg"""
 
-import sys
-import time
+from utilities.Button import *
 from utilities.Settings import Settings
-from SudokuGrid import SudokuGrid, redraw_window
-from algorithms.solver import get_ans
+from utilities.handleEvents import *
+from SudokuGrid import SudokuGrid, redraw_window, loading_screen
 from algorithms.generator import generate, Level
 import pygame as pg
 import time
-from datetime import timedelta
-from SudokuCell import SudokuCell
 from utilities.Button import Button
 import numpy as np
 
@@ -22,7 +19,7 @@ class SudokuGame:
         pg.init()
         self.settings = Settings()
         self.screen = pg.display.set_mode(
-                (self.settings.screen_width, self.settings.screen_height))
+            (self.settings.screen_width, self.settings.screen_height))
         pg.display.set_caption("Sudoku Game")
 
         # TODO: init sudoku grid
@@ -35,6 +32,7 @@ class SudokuGame:
         self.play_time = 0
         self.strikes = 0
         self.msg = "Press Enter key after your input to check if the value is correct. "
+        self.is_loading = False
 
     def run_game(self):
         """Start the main loop for the game."""
@@ -59,73 +57,45 @@ class SudokuGame:
                     self.board.select(clicked[0], clicked[1])
                     self.key = None
 
-                # # click events for pen or pencil mode btn
-                # if pencil_btn.is_hover(pos):
-                #     pencil_btn.clicked = True
-                #     pen_btn.clicked = False
-                #     is_pen_mode = False
-                # elif pen_btn.is_hover(pos):
-                #     pencil_btn.clicked = False
-                #     pen_btn.clicked = True
-                #     is_pen_mode = True
+                # click events for pen or pencil mode btn
+                for btn in mode_buttons:
+                    if btn.is_hover():
+                        remove_click_for_buttons(mode_buttons)
+                        btn.clicked = True
+                        if pen_btn.clicked:
+                            self.board.is_pen_mode = True
+                        else:
+                            self.board.is_pen_mode = False
+                        break
 
-                # # click events for generate btn
-                # if generate_btn.is_hover(pos):
-                #     print("generate btn is clicked")
-                #     is_loading = True
-                #     prob = generate(Level.EASY)
-                #     board = SudokuGrid(prob, 540, 540)
-                #     key = None
-                #     run = True
-                #     start = time.time()
-                #     strikes = 0
-                #     msg = "Press Enter key after your input to check if the value is correct. "
+                # click events for generate btn
+                if generate_btn.is_hover():
+                    print("generate btn is clicked")
+                    global next_game
+                    next_game = True
+                    # self.is_loading = True
+                    # self.prob = generate(Level.EASY)
+                    # self.board = SudokuGrid(prob, 540, 540)
+                    # self.key = None
+                    # self.run = True
+                    # self.start = time.time()
+                    # self.strikes = 0
+                    # self.msg = "Press Enter key after your input to check if the value is correct. "
+                    # TODO: a new problem is not drawn though
+                    # game.run = False
+                    # new_prob = generate(Level.EASY)
+                    # new_game = SudokuGame(new_prob)
+                    # new_game.run_game()
 
-            # # TODO: this event should be included in Button Class
-            # if event.type == pg.MOUSEMOTION:
-            #     if pencil_btn.is_hover(pos):
-            #         pencil_btn.color = hover_color
-            #     else:
-            #         pencil_btn.color = btn_color
-            #
-            #     if pen_btn.is_hover(pos):
-            #         pen_btn.color = hover_color
-            #     else:
-            #         pen_btn.color = btn_color
-            #
-            #     if generate_btn.is_hover(pos):
-            #         generate_btn.color = hover_color
-            #     else:
-            #         generate_btn.color = btn_color
+            button_manager.handle_hover_for_all(event)
 
             # keyboard events
             if event.type == pg.KEYDOWN:
+                num_input_events(event, self.board)
+                arrow_keys_events(event, self.board)
+
                 if event.key == pg.K_q:
                     self.run = False
-
-                if pg.K_1 <= event.key <= pg.K_9:
-                    key = int(pg.key.name(event.key))
-                    # update temp info only after event
-                    if self.board.selected and key is not None:
-                        self.board.update_selected_cell(key)
-
-                if pg.K_KP1 <= event.key <= pg.K_KP9:
-                    key = int(pg.key.name(event.key)[1])
-                    # update temp info only after event
-                    if self.board.selected and key is not None:
-                        self.board.update_selected_cell(key)
-
-                if self.board.selected:
-                    i, j = self.board.selected
-                    if event.key == pg.K_LEFT and j > 0:
-                        j -= 1
-                    elif event.key == pg.K_RIGHT and j < 8:
-                        j += 1
-                    elif event.key == pg.K_UP and i > 0:
-                        i -= 1
-                    elif event.key == pg.K_DOWN and i < 8:
-                        i += 1
-                    self.board.select(i, j)
 
                 if event.key == pg.K_DELETE:
                     self.board.clear_selected()
@@ -154,9 +124,26 @@ class SudokuGame:
                             self.msg = "You got it wrong for more than 5 times! Game over!"
 
     def _update_screen(self):
-        # self.screen.fill(self.settings.bg_color)
+        self.screen.fill(self.settings.bg_color)
+
+        while self.is_loading:
+            # TODO: make loading time dynamic
+            for i in range(5):
+                loading_screen(self.screen)
+                pg.display.flip()
+                time.sleep(1)
+            self.is_loading = False
+
         redraw_window(self.screen, self.board, self.play_time, self.strikes, self.msg)
+        button_manager.draw_buttons(self.screen)
         pg.display.update()
+
+
+def new_game(prev):
+    prev.run = False
+    new_prob = generate(Level.EASY)
+    new = SudokuGame(new_prob)
+    return new
 
 
 if __name__ == '__main__':
@@ -173,4 +160,26 @@ if __name__ == '__main__':
     ]
 
     game = SudokuGame(prob)
+
+    # initialize the buttons
+    btn_width = 130
+    btn_height = 50
+
+    BUTTON_STYLE = {"font": pg.font.SysFont("constantia", 20),
+                    "hover_color": BROWN,
+                    "clicked_color": ORANGE,
+                    "font_color": OFF_WHITE}
+
+    btn_rect = pg.Rect(game.settings.screen_width - btn_width - 10, btn_height, btn_width, btn_height)
+    pencil_btn = Button(btn_rect, BLUE, "Pencil Mode", **BUTTON_STYLE)
+    pencil_btn.clicked = True
+    pen_btn = pencil_btn.duplicate(0, 150, "Pen Mode")
+    generate_btn = Button(btn_rect.inflate(10, 0).move(0, 450), GREEN, "New Problem", **BUTTON_STYLE)
+    button_manager = ButtonManager((pencil_btn, pen_btn, generate_btn))
+    mode_buttons = [pencil_btn, pen_btn]
+
     game.run_game()
+    if next_game:
+        new_game = new_game(game)
+        new_game.run_game()
+        next_game = False

@@ -1,13 +1,12 @@
 """classes of Sudoku Grid"""
 from algorithms.solver import get_ans
 from algorithms.generator import generate, Level
-import pygame as pg
 import time
 from datetime import timedelta
 from SudokuCell import SudokuCell
 from utilities.Button import *
 from utilities.colors import *
-from utilities.handle_events import *
+from utilities.handleEvents import *
 import numpy as np
 
 
@@ -23,6 +22,7 @@ class SudokuGrid:
         self.model = None
         self.selected = None
         self.ans = get_ans(grid)
+        self.is_pen_mode = False
 
     def update_model(self):
         self.model = [[self.cells[i][j].value for j in range(self.cols)] for i in range(self.rows)]
@@ -40,7 +40,7 @@ class SudokuGrid:
         row, col = self.selected
         # only allow change on the cell number if it's not provided by the question
         if not self.cells[row][col].is_provided:
-            self.cells[row][col].update_cell(val, is_pen_mode)
+            self.cells[row][col].update_cell(val, self.is_pen_mode)
             self.update_model()
 
     def draw(self, win):
@@ -112,9 +112,6 @@ def redraw_window(win, board, run_time, strikes, msg):
     win.blit(text, (10, 550))
     # Draw grid and board
     board.draw(win)
-    # TODO: add a button manager to draw all the buttons added
-    # Draw buttons
-    button_manager.draw_buttons(win)
 
 
 def loading_screen(win):
@@ -127,6 +124,10 @@ def loading_screen(win):
 
 def format_time(secs):
     return str(timedelta(seconds=secs))
+
+
+def init_game():
+    pass
 
 
 if __name__ == '__main__':
@@ -149,14 +150,13 @@ if __name__ == '__main__':
     ]
 
     # initialize the game
-    prob = generate(Level.EASY)
+    # prob = generate(Level.EASY)
     board = SudokuGrid(prob, 540, 540)
     key = None
     run = True
     start = time.time()
     strikes = 0
     msg = "Press Enter key after your input to check if the value is correct. "
-    is_pen_mode = False
 
     # initialize the buttons
     btn_width = 130
@@ -200,6 +200,10 @@ if __name__ == '__main__':
                     if btn.is_hover():
                         remove_click_for_buttons(mode_buttons)
                         btn.clicked = True
+                        if pen_btn.clicked:
+                            board.is_pen_mode = True
+                        else:
+                            board.is_pen_mode = False
                         break
 
                 # click events for generate btn
@@ -220,34 +224,12 @@ if __name__ == '__main__':
 
             # keyboard events
             if event.type == pg.KEYDOWN:
-                if event.key == pg.K_q:
-                    run = False
 
                 num_input_events(event, board)
-                # if pg.K_1 <= event.key <= pg.K_9:
-                #     key = int(pg.key.name(event.key))
-                #     # update temp info only after event
-                #     if board.selected and key is not None:
-                #         board.update_selected_cell(key)
-                #
-                # if pg.K_KP1 <= event.key <= pg.K_KP9:
-                #     key = int(pg.key.name(event.key)[1])
-                #     # update temp info only after event
-                #     if board.selected and key is not None:
-                #         board.update_selected_cell(key)
-
                 arrow_keys_events(event, board)
-                # if board.selected:
-                #     i, j = board.selected
-                #     if event.key == pg.K_LEFT and j > 0:
-                #         j -= 1
-                #     elif event.key == pg.K_RIGHT and j < 8:
-                #         j += 1
-                #     elif event.key == pg.K_UP and i > 0:
-                #         i -= 1
-                #     elif event.key == pg.K_DOWN and i < 8:
-                #         i += 1
-                #     board.select(i, j)
+
+                if event.key == pg.K_q:
+                    run = False
 
                 if event.key == pg.K_DELETE:
                     board.clear_selected()
@@ -284,5 +266,7 @@ if __name__ == '__main__':
             is_loading = False
 
         redraw_window(win, board, play_time, strikes, msg)
+        # Draw buttons
+        button_manager.draw_buttons(win)
         pg.display.update()
 
