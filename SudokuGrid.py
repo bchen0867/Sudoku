@@ -126,10 +126,6 @@ def format_time(secs):
     return str(timedelta(seconds=secs))
 
 
-def init_game():
-    pass
-
-
 if __name__ == '__main__':
     win_size = (700, 700)
     win = pg.display.set_mode(win_size)

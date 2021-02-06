@@ -14,25 +14,22 @@ import numpy as np
 class SudokuGame:
     """Overall class to manage game assets and behavior."""
 
-    def __init__(self, prob):
+    def __init__(self):
         """Initialize the game, and create resources."""
         pg.init()
         self.settings = Settings()
         self.screen = pg.display.set_mode(
             (self.settings.screen_width, self.settings.screen_height))
         pg.display.set_caption("Sudoku Game")
-
-        # TODO: init sudoku grid
-        # self.level = Level.EASY
-        # self.prob = generate(self.level)
-        self.board = SudokuGrid(np.copy(prob), 540, 540)
+        self.level = Level.EASY
+        self.prob = generate(self.level)
+        self.board = SudokuGrid(np.copy(self.prob), 540, 540)
         self.key = None
         self.run = True
         self.start = time.time()
         self.play_time = 0
         self.strikes = 0
         self.msg = "Press Enter key after your input to check if the value is correct. "
-        self.is_loading = False
 
     def run_game(self):
         """Start the main loop for the game."""
@@ -45,6 +42,8 @@ class SudokuGame:
 
     def _check_events(self):
         for event in pg.event.get():
+            # currently, click quit only exit the current game.
+            # If multiple games are running （new game btn was clicked), it will go back to the previous game
             if event.type == pg.QUIT:
                 self.run = False
 
@@ -71,21 +70,13 @@ class SudokuGame:
                 # click events for generate btn
                 if generate_btn.is_hover():
                     print("generate btn is clicked")
-                    global next_game
-                    next_game = True
-                    # self.is_loading = True
-                    # self.prob = generate(Level.EASY)
-                    # self.board = SudokuGrid(prob, 540, 540)
-                    # self.key = None
-                    # self.run = True
-                    # self.start = time.time()
-                    # self.strikes = 0
-                    # self.msg = "Press Enter key after your input to check if the value is correct. "
-                    # TODO: a new problem is not drawn though
-                    # game.run = False
-                    # new_prob = generate(Level.EASY)
-                    # new_game = SudokuGame(new_prob)
-                    # new_game.run_game()
+                    # display loading screen for 5 secs
+                    for i in range(5):
+                        loading_screen(self.screen)
+                        pg.display.flip()
+                        time.sleep(1)
+
+                    new_game()
 
             button_manager.handle_hover_for_all(event)
 
@@ -125,41 +116,19 @@ class SudokuGame:
 
     def _update_screen(self):
         self.screen.fill(self.settings.bg_color)
-
-        while self.is_loading:
-            # TODO: make loading time dynamic
-            for i in range(5):
-                loading_screen(self.screen)
-                pg.display.flip()
-                time.sleep(1)
-            self.is_loading = False
-
         redraw_window(self.screen, self.board, self.play_time, self.strikes, self.msg)
         button_manager.draw_buttons(self.screen)
         pg.display.update()
 
 
-def new_game(prev):
-    prev.run = False
-    new_prob = generate(Level.EASY)
-    new = SudokuGame(new_prob)
-    return new
+def new_game():
+    pencil_btn.clicked = True
+    pen_btn.clicked = False
+    game = SudokuGame()
+    game.run_game()
 
 
 if __name__ == '__main__':
-    prob = [
-        [7, 8, 0, 4, 0, 0, 1, 2, 0],
-        [6, 0, 0, 0, 7, 5, 0, 0, 9],
-        [0, 0, 0, 6, 0, 1, 0, 7, 8],
-        [0, 0, 7, 0, 4, 0, 2, 6, 0],
-        [0, 0, 1, 0, 5, 0, 9, 3, 0],
-        [9, 0, 4, 0, 6, 0, 0, 0, 5],
-        [0, 7, 0, 3, 0, 0, 0, 1, 2],
-        [1, 2, 0, 0, 0, 7, 4, 0, 0],
-        [0, 4, 9, 2, 0, 6, 0, 0, 7]
-    ]
-
-    game = SudokuGame(prob)
 
     # initialize the buttons
     btn_width = 130
@@ -170,16 +139,12 @@ if __name__ == '__main__':
                     "clicked_color": ORANGE,
                     "font_color": OFF_WHITE}
 
-    btn_rect = pg.Rect(game.settings.screen_width - btn_width - 10, btn_height, btn_width, btn_height)
+    btn_rect = pg.Rect(Settings().screen_width - btn_width - 10, btn_height, btn_width, btn_height)
     pencil_btn = Button(btn_rect, BLUE, "Pencil Mode", **BUTTON_STYLE)
-    pencil_btn.clicked = True
     pen_btn = pencil_btn.duplicate(0, 150, "Pen Mode")
     generate_btn = Button(btn_rect.inflate(10, 0).move(0, 450), GREEN, "New Problem", **BUTTON_STYLE)
+
     button_manager = ButtonManager((pencil_btn, pen_btn, generate_btn))
     mode_buttons = [pencil_btn, pen_btn]
 
-    game.run_game()
-    if next_game:
-        new_game = new_game(game)
-        new_game.run_game()
-        next_game = False
+    new_game()

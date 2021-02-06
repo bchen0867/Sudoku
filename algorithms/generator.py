@@ -29,7 +29,6 @@ def fill_grid(grid, arr):
     grid[row][col] = 0
 
 
-@functools.lru_cache(10)
 def generate(diff_lel):
     # record the start time
     start = time.time()
