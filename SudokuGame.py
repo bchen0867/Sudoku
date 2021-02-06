@@ -1,13 +1,11 @@
-"""Sudoku Game GUI made with pg"""
+"""Sudoku Game GUI made with pygame"""
 
-from utilities.Button import *
-from utilities.Settings import Settings
+from utilities.Settings import *
 from utilities.handleEvents import *
 from SudokuGrid import SudokuGrid, redraw_window, loading_screen
 from algorithms.generator import generate, Level
 import pygame as pg
 import time
-from utilities.Button import Button
 import numpy as np
 
 
@@ -126,25 +124,3 @@ def new_game():
     pen_btn.clicked = False
     game = SudokuGame()
     game.run_game()
-
-
-if __name__ == '__main__':
-
-    # initialize the buttons
-    btn_width = 130
-    btn_height = 50
-
-    BUTTON_STYLE = {"font": pg.font.SysFont("constantia", 20),
-                    "hover_color": BROWN,
-                    "clicked_color": ORANGE,
-                    "font_color": OFF_WHITE}
-
-    btn_rect = pg.Rect(Settings().screen_width - btn_width - 10, btn_height, btn_width, btn_height)
-    pencil_btn = Button(btn_rect, BLUE, "Pencil Mode", **BUTTON_STYLE)
-    pen_btn = pencil_btn.duplicate(0, 150, "Pen Mode")
-    generate_btn = Button(btn_rect.inflate(10, 0).move(0, 450), GREEN, "New Problem", **BUTTON_STYLE)
-
-    button_manager = ButtonManager((pencil_btn, pen_btn, generate_btn))
-    mode_buttons = [pencil_btn, pen_btn]
-
-    new_game()
