@@ -2,13 +2,13 @@
 A sudoku game and generator with UI, made with Pygame library in Python. The solver/generator code uses the backtracking algorithm.
 
 
-####Current Features:
+**Current Features**
 - Pencil and Pen Modes. While in Pen mode, you can press Enter key to compare your input with the answer.
 - Game Generator. A random new game can be created when the new game button is clicked.
 
 
-####Features in Development:
-- Difficulty Levels: 
+**Features in Development**
+- Difficulty Levels
     * Easy (31-33 clues provided)
     * Medium (28-30 clues)
     * Hard (25-27 clues)
@@ -21,4 +21,4 @@ A sudoku game and generator with UI, made with Pygame library in Python. The sol
  (The irregular sudoku problems are inspired by a sudoku creator, http://blog.sina.com.cn/u/1347445067)
 
 
-updated on Feb 7, 2021
+updated on Feb 13, 2021
